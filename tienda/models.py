@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.core.validators import MinValueValidator, MaxValueValidator
+import random
 
 class Categoria(models.Model):
 
@@ -23,3 +24,20 @@ class Juego(models.Model):
         return self.nombre
 
 
+
+def generar_codigo_pedido():
+    return str(random.randint(100000000000, 9999999999999))
+
+class Pedido(models.Model):
+    juego = models.ForeignKey(Juego, on_delete=models.CASCADE)
+    nombre_cliente = models.CharField(max_length=100)
+    correo = models.EmailField()
+    telefono = models.CharField(max_length=20)
+    cantidad = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    fecha_pedido = models.DateTimeField(auto_now_add=True)
+    
+    codigo = models.CharField(max_length=20, default=generar_codigo_pedido, editable=False, unique=True)
+
+    def __str__(self):
+        return f"Pedido {self.codigo} - {self.nombre_cliente}"
+    
