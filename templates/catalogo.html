@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Catálogo | Juegos de mesa{% endblock %}
+
+{% block content %}
+    <div class="mb-4">
+        <h1 class="h2">Juegos disponibles</h1>
+        <p class="text-body-secondary mb-0">Encuentra tu próximo juego favorito.</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+        {% for juego in juegos %}
+            <div class="col">
+                <article class="card h-100 shadow-sm">
+                    {% if juego.imagen %}
+                        <img src="{{ juego.imagen.url }}" class="card-img-top p-3" alt="{{ juego.nombre }}" style="height: 240px; object-fit: contain;">
+                    {% else %}
+                        <div class="d-flex align-items-center justify-content-center bg-body-secondary text-body-secondary" style="height: 240px;">
+                            Imagen no disponible
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h2 class="card-title h5">{{ juego.nombre }}</h2>
+                        <p class="card-text text-body-secondary">Categoría: {{ juego.categoria.nombre }}</p>
+                        <p class="card-text fw-bold mb-0">{{ juego.precio_chileno }}</p>
+                    </div>
+                </article>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <p class="alert alert-info mb-0">Por ahora no hay juegos disponibles.</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

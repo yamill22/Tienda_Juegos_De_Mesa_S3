@@ -23,6 +23,10 @@ class Juego(models.Model):
     def __str__(self):
         return self.nombre
 
+    @property
+    def precio_chileno(self):
+        return f"${self.precio:,.0f}".replace(',', '.')
+
 
 
 def generar_codigo_pedido():
