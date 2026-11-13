@@ -8,6 +8,35 @@
         <p class="text-body-secondary mb-0">Encuentra tu próximo juego favorito.</p>
     </div>
 
+    <form method="get" class="row g-3 align-items-end mb-4">
+        <div class="col-12 col-md-5">
+            <label for="nombre" class="form-label">Buscar por nombre</label>
+            <input
+                type="search"
+                id="nombre"
+                name="nombre"
+                class="form-control"
+                value="{{ nombre }}"
+                placeholder="Ej.: Ajedrez"
+            >
+        </div>
+        <div class="col-12 col-md-4">
+            <label for="categoria" class="form-label">Categoría</label>
+            <select id="categoria" name="categoria" class="form-select">
+                <option value="">Todas las categorías</option>
+                {% for categoria in categorias %}
+                    <option value="{{ categoria.id }}"{% if categoria_seleccionada == categoria.id|stringformat:"s" %} selected{% endif %}>
+                        {{ categoria.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-12 col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <a href="{% url 'catalogo' %}" class="btn btn-outline-secondary">Limpiar</a>
+        </div>
+    </form>
+
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
         {% for juego in juegos %}
             <div class="col">
@@ -28,7 +57,7 @@
             </div>
         {% empty %}
             <div class="col-12">
-                <p class="alert alert-info mb-0">Por ahora no hay juegos disponibles.</p>
+                <p class="alert alert-info mb-0">No se encontraron juegos.</p>
             </div>
         {% endfor %}
     </div>
