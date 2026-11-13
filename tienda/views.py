@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from tienda.models import Categoria, Juego
 
 def catalogo(request):
@@ -20,3 +20,12 @@ def catalogo(request):
         'categoria_seleccionada': categoria_id if categoria_id.isdecimal() else '',
     })
     
+
+def detalle_juego(request, juego_id):
+    juego = get_object_or_404(
+        Juego.objects.select_related('categoria'),
+        pk=juego_id,
+        disponible=True,
+    )
+
+    return render(request, 'detalle.html', {'juego': juego})

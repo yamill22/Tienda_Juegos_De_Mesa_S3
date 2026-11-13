@@ -52,6 +52,7 @@
                         <h2 class="card-title h5">{{ juego.nombre }}</h2>
                         <p class="card-text text-body-secondary">Categoría: {{ juego.categoria.nombre }}</p>
                         <p class="card-text fw-bold mb-0">{{ juego.precio_chileno }}</p>
+                        <a href="{% url 'detalle' juego.id %}" class="btn btn-primary mt-3 w-100">Detalle</a>
                     </div>
                 </article>
             </div>

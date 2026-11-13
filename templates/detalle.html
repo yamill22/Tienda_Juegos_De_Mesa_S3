@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ juego.nombre }} - Detalle{% endblock %}
+
+{% block content %}
+    <a href="{% url 'catalogo' %}" class="btn btn-outline-secondary mb-4">
+        &larr; Volver al catálogo
+    </a>
+
+    <div class="row g-4">
+        <div class="col-12 col-md-5">
+            {% if juego.imagen %}
+                <img
+                    src="{{ juego.imagen.url }}"
+                    alt="Caja de {{ juego.nombre }}"
+                    class="img-fluid rounded"
+                >
+            {% else %}
+                <div class="d-flex align-items-center justify-content-center bg-body-secondary text-body-secondary rounded" style="min-height: 300px;">
+                    Imagen no disponible
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-12 col-md-7">
+            <h1 class="mb-3">{{ juego.nombre }}</h1>
+
+            <p><strong>Categoría:</strong> {{ juego.categoria.nombre }}</p>
+            <p><strong>Precio:</strong> {{ juego.precio_chileno }}</p>
+            <p><strong>Jugadores:</strong> {{ juego.jugadores }}</p>
+            <p><strong>Edad mínima recomendada:</strong> {{ juego.edad_minima }} años</p>
+            <p><strong>Stock Disponible:</strong> {{ juego.stock }}</p>
+            <p><strong>Disponibilidad:</strong> Disponible</p>
+        </div>
+    </div>
+{% endblock %}
