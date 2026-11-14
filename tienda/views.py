@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 from tienda.models import Categoria, Juego
+from tienda.forms import FormVenta
 
 def catalogo(request):
     juegos = Juego.objects.filter(disponible=True).select_related('categoria').order_by('nombre')
@@ -28,4 +29,16 @@ def detalle_juego(request, juego_id):
         disponible=True,
     )
 
-    return render(request, 'detalle.html', {'juego': juego})
+    if request.method == 'POST':
+        form = FormVenta(request.POST)
+
+        form_valido = form.is_valid()
+    else:
+        form = FormVenta()
+        form_valido = False
+
+    return render(request, 'detalle.html', {
+        'juego': juego,
+        'form': form,
+        'form_valido': form_valido,
+    })
