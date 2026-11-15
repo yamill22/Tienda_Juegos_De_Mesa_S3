@@ -26,3 +26,17 @@ class FormVenta(forms.Form):
             'max': 5,
         }),
     )
+
+    def __init__(self, *args, juego, **kwargs):
+        self.juego = juego
+        super().__init__(*args, **kwargs)
+
+    def clean_cantidad(self):
+        cantidad = self.cleaned_data['cantidad']
+
+        if cantidad > self.juego.stock:
+            raise forms.ValidationError(
+                f'Solo hay {self.juego.stock} unidades disponibles.'
+            )
+
+        return cantidad

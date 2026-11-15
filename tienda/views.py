@@ -1,5 +1,9 @@
-from django.shortcuts import get_object_or_404, render
-from tienda.models import Categoria, Juego
+from django.contrib import messages
+from django.db import transaction
+from django.db.models import F
+from django.shortcuts import get_object_or_404, redirect, render
+
+from tienda.models import Categoria, Juego, Pedido
 from tienda.forms import FormVenta
 
 def catalogo(request):
@@ -23,22 +27,49 @@ def catalogo(request):
     
 
 def detalle_juego(request, juego_id):
-    juego = get_object_or_404(
-        Juego.objects.select_related('categoria'),
-        pk=juego_id,
-        disponible=True,
-    )
-
     if request.method == 'POST':
-        form = FormVenta(request.POST)
+        with transaction.atomic():
+            juego = get_object_or_404(
+                Juego.objects.select_related('categoria'),
+                pk=juego_id,
+                disponible=True,
+            )
+            form = FormVenta(request.POST, juego=juego)
 
-        form_valido = form.is_valid()
+            if form.is_valid():
+                cantidad = form.cleaned_data['cantidad']
+
+                stock_actualizado = Juego.objects.filter(
+                    pk=juego.pk,
+                    disponible=True,
+                    stock__gte=cantidad,
+                ).update(stock=F('stock') - cantidad)
+
+                if stock_actualizado:
+                    Pedido.objects.create(
+                        juego=juego,
+                        nombre_cliente=form.cleaned_data['nombre_cliente'],
+                        correo=form.cleaned_data['correo'],
+                        telefono=form.cleaned_data['telefono'],
+                        cantidad=cantidad,
+                    )
+                    messages.success(request, 'Pedido realizado correctamente.')
+                    return redirect('detalle', juego_id=juego.pk)
+
+                juego.refresh_from_db(fields=['stock'])
+                form.add_error(
+                    'cantidad',
+                    f'Solo hay {juego.stock} unidades disponibles.',
+                )
     else:
-        form = FormVenta()
-        form_valido = False
+        juego = get_object_or_404(
+            Juego.objects.select_related('categoria'),
+            pk=juego_id,
+            disponible=True,
+        )
+        form = FormVenta(juego=juego)
 
     return render(request, 'detalle.html', {
         'juego': juego,
         'form': form,
-        'form_valido': form_valido,
     })

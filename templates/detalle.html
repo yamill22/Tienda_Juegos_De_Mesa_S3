@@ -31,33 +31,44 @@
             <p><strong>Precio:</strong> {{ juego.precio_chileno }}</p>
             <p><strong>Jugadores:</strong> {{ juego.jugadores }}</p>
             <p><strong>Edad mínima recomendada:</strong> {{ juego.edad_minima }} años</p>
-            <p><strong>Stock Disponible:</strong> {{ juego.stock }}</p>
-            <p><strong>Disponibilidad:</strong> Disponible</p>
+            <p><strong>Stock:</strong> {{ juego.stock }}</p>
+            <p>
+                <strong>Disponibilidad:</strong>
+                {% if juego.stock > 0 %}
+                    Disponible
+                {% else %}
+                    Agotado
+                {% endif %}
+            </p>
 
-            {% if form_valido %}
-                <div class="alert alert-info">
-                    datos validados
+            {% for message in messages %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+
+            {% if juego.stock > 0 %}
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {{ field.label_tag }}
+                            {{ field }}
+
+                            {% for error in field.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-primary">
+                        Realizar Pedido
+                    </button>
+                </form>
+            {% else %}
+                <div class="alert alert-secondary mt-4">
+                    Este juego está agotado y no se pueden realizar pedidos.
                 </div>
             {% endif %}
-
-            <form method="post" class="mt-4">
-                {% csrf_token %}
-
-                {% for field in form %}
-                    <div class="mb-3">
-                        {{ field.label_tag }}
-                        {{ field }}
-
-                        {% for error in field.errors %}
-                            <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-
-                <button type="submit" class="btn btn-primary">
-                    Realizar Pedido
-                </button>
-            </form>
         </div>
     </div>
 {% endblock %}
