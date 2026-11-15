@@ -8,8 +8,8 @@ from tienda import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.catalogo, name='catalogo'),
-    path('detalle/<int:juego_id>/', views.detalle_juego, name='detalle')
-
+    path('detalle/<int:juego_id>/', views.detalle_juego, name='detalle'),
+    path('comprobante/<str:codigo>/', views.comprobante_pedido, name='comprobante')
 ]
 
 if settings.DEBUG:

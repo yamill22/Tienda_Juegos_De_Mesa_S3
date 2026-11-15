@@ -42,6 +42,11 @@ class Pedido(models.Model):
     
     codigo = models.CharField(max_length=20, default=generar_codigo_pedido, editable=False, unique=True)
 
+    @property
+    def total_chileno(self):
+        total = self.juego.precio * self.cantidad
+        return f"${total:,.0f}".replace(',', '.')
+
     def __str__(self):
         return f"Pedido {self.codigo} - {self.nombre_cliente}"
     

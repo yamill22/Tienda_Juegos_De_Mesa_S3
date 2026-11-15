@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.db import transaction
 from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
@@ -46,15 +45,14 @@ def detalle_juego(request, juego_id):
                 ).update(stock=F('stock') - cantidad)
 
                 if stock_actualizado:
-                    Pedido.objects.create(
+                    pedido = Pedido.objects.create(
                         juego=juego,
                         nombre_cliente=form.cleaned_data['nombre_cliente'],
                         correo=form.cleaned_data['correo'],
                         telefono=form.cleaned_data['telefono'],
                         cantidad=cantidad,
                     )
-                    messages.success(request, 'Pedido realizado correctamente.')
-                    return redirect('detalle', juego_id=juego.pk)
+                    return redirect('comprobante', codigo=pedido.codigo)
 
                 juego.refresh_from_db(fields=['stock'])
                 form.add_error(
@@ -73,3 +71,11 @@ def detalle_juego(request, juego_id):
         'juego': juego,
         'form': form,
     })
+
+
+def comprobante_pedido(request, codigo):
+    pedido = get_object_or_404(
+        Pedido.objects.select_related('juego'),
+        codigo=codigo,
+    )
+    return render(request, 'comprobante.html', {'pedido': pedido})

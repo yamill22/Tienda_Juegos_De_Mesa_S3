@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Comprobante {{ pedido.codigo }} | Juegos de mesa{% endblock %}
+
+{% block content %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="h2">Pedido realizado</h1>
+            <p class="text-body-secondary">
+                Guarda el código de tu pedido para consultarlo: <strong>{{ pedido.codigo }}</strong>
+            </p>
+
+            <dl class="row mb-4">
+                <dt class="col-sm-4">Juego</dt>
+                <dd class="col-sm-8">{{ pedido.juego.nombre }}</dd>
+
+                <dt class="col-sm-4">Nombre</dt>
+                <dd class="col-sm-8">{{ pedido.nombre_cliente }}</dd>
+
+                <dt class="col-sm-4">Correo</dt>
+                <dd class="col-sm-8">{{ pedido.correo }}</dd>
+
+                <dt class="col-sm-4">Teléfono</dt>
+                <dd class="col-sm-8">{{ pedido.telefono }}</dd>
+
+                <dt class="col-sm-4">Cantidad</dt>
+                <dd class="col-sm-8">{{ pedido.cantidad }}</dd>
+
+                <dt class="col-sm-4">Precio total</dt>
+                <dd class="col-sm-8 fw-bold">{{ pedido.total_chileno }}</dd>
+
+                <dt class="col-sm-4">Fecha y hora</dt>
+                <dd class="col-sm-8">{{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</dd>
+            </dl>
+
+            <a href="{% url 'catalogo' %}" class="btn btn-primary">
+                Volver al catálogo
+            </a>
+        </div>
+    </div>
+{% endblock %}
